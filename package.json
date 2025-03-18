@@ -1,0 +1,16 @@
+{
+    "name": "nginx-load-balancer",
+    "version": "1.0.0",
+    "description": "A Node.js application serving a static HTML file, used for load balancing with NGINX.",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "author": "Steve",
+    "license": "MIT",
+    "dependencies": {
+        "aws-sdk": "^2.1692.0",
+        "express": "^4.21.2",
+        "path": "^0.12.7"
+    }
+}
