@@ -11,7 +11,12 @@ RUN npm install
 
 # Now copy the rest of the application code
 COPY server.js . 
+
+
 # COPY images ./images
+# Commented this to check if s3 connection works
+
+
 COPY css ./css
 COPY js ./js
 COPY public ./public
