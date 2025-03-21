@@ -14,7 +14,7 @@ resource "aws_subnet" "public_subnet_1a" {
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
   tags = {
-    Name = "public_subnet"
+    Name = "public_subnet1"
   }
 }
 
@@ -24,7 +24,7 @@ resource "aws_subnet" "public_subnet_1b" {
   availability_zone       = "us-east-1b"
   map_public_ip_on_launch = true
   tags = {
-    Name = "public_subnet"
+    Name = "public_subnet2"
   }
 }
 
@@ -59,7 +59,7 @@ resource "aws_nat_gateway" "nat" {
   subnet_id     = aws_subnet.public_subnet_1a.id
 
   tags = {
-    Name = "gw NAT"
+    Name = "gwNAT"
   }
 
   # To ensure proper ordering, it is recommended to add an explicit dependency
@@ -134,6 +134,13 @@ resource "aws_security_group" "sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -145,57 +152,57 @@ resource "aws_security_group" "sg" {
 
 #_-----------------------------------------------------------
 
-resource "aws_iam_role" "ecs_task_role" {
-  name               = "ecs-task-role"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect    = "Allow"
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        }
-        Action   = "sts:AssumeRole"
-      }
-    ]
-  })
+# resource "aws_iam_role" "ecs_task_role" {
+#   name               = "ecs-task-role"
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect    = "Allow"
+#         Principal = {
+#           Service = "ecs-tasks.amazonaws.com"
+#         }
+#         Action   = "sts:AssumeRole"
+#       }
+#     ]
+#   })
 
-  tags = {
-    Name = "ecs-task-role"
-  }
-}
+#   tags = {
+#     Name = "ecs-task-role"
+#   }
+# }
 
-# Attach the S3 ReadOnlyAccess policy to the ECS role
-resource "aws_iam_role_policy_attachment" "ecs_task_s3_readonly" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
-  role       = aws_iam_role.ecs_task_role.name
-}
-
-
+# # Attach the S3 ReadOnlyAccess policy to the ECS role
+# resource "aws_iam_role_policy_attachment" "ecs_task_s3_readonly" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+#   role       = aws_iam_role.ecs_task_role.name
+# }
 
 
-resource "aws_ecs_task_definition" "service" {
-  family = "service"
-  task_role_arn = aws_iam_role.ecs_task_role.id
-  container_definitions = jsonencode([
-    {
-      name      = "first"
-      image     = "service-first"
-      cpu       = 10
-      memory    = 512
-      essential = true
-      portMappings = [
-        {
-          containerPort = 3000
-          hostPort      = 3001
-        }
-      ]
-    }
+
+
+# resource "aws_ecs_task_definition" "service" {
+#   family = "service"
+#   task_role_arn = aws_iam_role.ecs_task_role.id
+#   container_definitions = jsonencode([
+#     {
+#       name      = "first"
+#       image     = "service-first"
+#       cpu       = 10
+#       memory    = 512
+#       essential = true
+#       portMappings = [
+#         {
+#           containerPort = 3000
+#           hostPort      = 3001
+#         }
+#       ]
+#     }
     
-  ])
+#   ])
 
 
-}
+#}
 
 
 
