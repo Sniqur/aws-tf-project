@@ -1,8 +1,8 @@
 output "private_subnet_id" {
-  value = aws_subnet.public_subnet_1a.id
+  value = module.networks.public1_subnet_id
 }
 
 output "security_group_id" {
-  value = aws_security_group.sg.id
+  value = module.networks.sec_group_id
 }
 
