@@ -4,18 +4,18 @@ module "iam" {
 }
 
 module "networks" {
-  source = "./modules/network"
+  source         = "./modules/network"
   vpc_cidr_block = ["10.0.0.0/16"]
-  vpc_name = "main_vpc"
+  vpc_name       = "main_vpc"
 
-  pub_subnet1_name = "public_subnet1"
-  pub_subnet1_cidr_block = [ "10.0.1.0/24" ]
+  pub_subnet1_name       = "public_subnet1"
+  pub_subnet1_cidr_block = ["10.0.1.0/24"]
 
-  pub_subnet2_name = "public_subnet2"
-  pub_subnet2_cidr_block = [ "10.0.2.0/24" ]
+  pub_subnet2_name       = "public_subnet2"
+  pub_subnet2_cidr_block = ["10.0.2.0/24"]
 
-  prvt_subnet_name = "private_subnet"
-  prvt_subnet_cidr_block = [ "10.0.3.0/24" ]
+  prvt_subnet_name       = "private_subnet"
+  prvt_subnet_cidr_block = ["10.0.3.0/24"]
 }
 
 
@@ -30,14 +30,23 @@ module "ecsService" {
   cluster_id          = module.ecs.cluster_id
   task_definition_arn = module.ecs.task_definition_arn
   task_def_dependency = module.ecs.task_def_dependency
+  target_group_id = module.load_balancer.target_group_id
 
   #----
-  private_subnet_id = module.networks.public1_subnet_id  #!!! change to private (testing purpose for now)
+  private_subnet_id = module.networks.prvt_subnet_id #!!! change to private (testing purpose for now)
   security_group_id = module.networks.sec_group_id
 
 }
 
 
+
+module "load_balancer" {
+  source            = "./modules/alb"
+  public_subnet1_id = module.networks.public1_subnet_id
+  public_subnet2_id = module.networks.public2_subnet_id
+  security_group_id = module.networks.sec_group_id
+  vpc_id            = module.networks.vpc_id
+}
 
 
 #_-----------------------------------------------------------

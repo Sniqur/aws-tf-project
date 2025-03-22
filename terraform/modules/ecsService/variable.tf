@@ -16,3 +16,7 @@ variable "security_group_id" {
 variable "task_def_dependency" {
   
 }
+
+variable "target_group_id" {
+  
+}

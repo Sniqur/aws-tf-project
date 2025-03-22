@@ -6,6 +6,13 @@ resource "aws_ecs_service" "ecs-service" {
   
 
   launch_type     = "FARGATE"
+
+  load_balancer {
+  target_group_arn = var.target_group_id
+  container_name   = "testaws"
+  container_port   = 3000
+  }
+
   network_configuration {
     
     subnets          = [var.private_subnet_id]  
