@@ -1,5 +1,5 @@
 resource "aws_lb" "alb_test" {
-  name               = "my-app-alb"
+  name               = var.alb_name
   internal           = false               # Set to true for an internal ALB
   load_balancer_type = "application"
   security_groups    = [var.security_group_id]
@@ -10,7 +10,7 @@ resource "aws_lb" "alb_test" {
 
 
 resource "aws_lb_target_group" "TG1" {
-  name     = "ecs-target-group"
+  name     = var.ecs_target_group_name
   port     = 80
   protocol = "HTTP"
   vpc_id   = var.vpc_id

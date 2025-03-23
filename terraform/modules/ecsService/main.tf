@@ -1,5 +1,5 @@
 resource "aws_ecs_service" "ecs-service" {
-  name            = "my-ecs-service"
+  name            = var.ecs_service_name
   cluster         = var.cluster_id  
   task_definition = var.task_definition_arn  
   desired_count   = 1
@@ -9,8 +9,8 @@ resource "aws_ecs_service" "ecs-service" {
 
   load_balancer {
   target_group_arn = var.target_group_id
-  container_name   = "testaws"
-  container_port   = 3000
+  container_name   = var.container_name
+  container_port   = var.container_port
   }
 
   network_configuration {

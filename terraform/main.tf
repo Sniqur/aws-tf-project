@@ -1,6 +1,6 @@
 module "iam" {
-  source = "./modules/iam"
-
+  source    = "./modules/iam"
+  role_name = "ecs-task-role"
 }
 
 module "networks" {
@@ -20,9 +20,13 @@ module "networks" {
 
 
 module "ecs" {
-  source      = "./modules/ecs"
-  role_arn    = module.iam.role_arn
-  task_family = "service"
+  source                = "./modules/ecs"
+  role_arn              = module.iam.role_arn
+  task_family           = "service"
+  cluster_name          = "my-cluster"
+  docker_container_name = "testaws"
+  docker_image          = "steeve05/aws:latest"
+  container_port        = 3000
 }
 
 module "ecsService" {
@@ -30,22 +34,26 @@ module "ecsService" {
   cluster_id          = module.ecs.cluster_id
   task_definition_arn = module.ecs.task_definition_arn
   task_def_dependency = module.ecs.task_def_dependency
-  target_group_id = module.load_balancer.target_group_id
+  target_group_id     = module.load_balancer.target_group_id
 
   #----
   private_subnet_id = module.networks.prvt_subnet_id #!!! change to private (testing purpose for now)
   security_group_id = module.networks.sec_group_id
-
+  ecs_service_name  = "my-ecs-service"
+  container_name    = module.ecs.container_name
+  container_port    = 3000
 }
 
 
 
 module "load_balancer" {
-  source            = "./modules/alb"
-  public_subnet1_id = module.networks.public1_subnet_id
-  public_subnet2_id = module.networks.public2_subnet_id
-  security_group_id = module.networks.sec_group_id
-  vpc_id            = module.networks.vpc_id
+  source                = "./modules/alb"
+  public_subnet1_id     = module.networks.public1_subnet_id
+  public_subnet2_id     = module.networks.public2_subnet_id
+  security_group_id     = module.networks.sec_group_id
+  vpc_id                = module.networks.vpc_id
+  alb_name              = "my-app-alb"
+  ecs_target_group_name = "ecs-target-group"
 }
 
 

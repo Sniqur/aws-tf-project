@@ -13,3 +13,11 @@ variable "security_group_id" {
 variable "vpc_id" {
   
 }
+
+variable "alb_name" {
+  type = string
+}
+
+variable "ecs_target_group_name" {
+  type = string
+}
